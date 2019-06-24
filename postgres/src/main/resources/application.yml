@@ -1,0 +1,44 @@
+
+
+#Dedault configuration
+spring:
+  profiles:
+    active: dev
+
+#MapperLocations /src/main/resources
+mybatis:
+  typeAliasesPackage: com.postgres.entity
+  mapperLocations: classpath:mapping/*.xml
+
+
+---
+
+#Development configuration
+spring:
+  profiles: dev
+
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://52.45.153.150:5432/student?useSSL=false
+    username: postgres
+    password: 123456
+
+    # use druid Datasource
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    check-template-location: true
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    mode: HTML
+    cache: false
+
+
+
+server:
+  port: 8080
+

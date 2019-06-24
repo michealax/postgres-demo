@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Student</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{css/bootstrap.min.css}" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+    <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
+    <!-- Graph CSS -->
+    <link th:href="@{css/font-awesome.css}" rel="stylesheet">
+    <!-- icons -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" th:href="@{css/icon-font.min.css}" type='text/css'/>
+    <!-- jquery -->
+    <script th:src="@{js/jquery-1.10.2.min.js}"></script>
+</head>
+<body>
+<div class="page-container">
+    <div class="left-content">
+
+        <div class="outter-wp">
+            <div class="sub-heard-part">
+                <ol class="breadcrumb m-b-0">
+                    <li><a th:href="all">Home</a></li>
+                    <li class="active">Add</li>
+                </ol>
+            </div>
+
+            <div class="forms-main">
+                <h2 class="inner-tittle">Student Information</h2>
+                <div class="graph-form">
+                    <div class="validation-form">
+                        <div class="col-md-offset-1 col-md-6 form-group1">
+                            <label class="control-label">Student ID</label>
+                            <input type="text" placeholder="Student ID" required="" id="studentid"
+                                   style="cursor: pointer" onblur="validateID(this.value)">
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group1 form-last">
+                            <label class="control-label">Student Name</label>
+                            <input type="text" placeholder="Student Name" required="" id="name" style="cursor: pointer"
+                                   onblur="validateName(this.value)">
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group1 group-mail">
+                            <label class="control-label">Email</label>
+                            <input type="text" placeholder="Email" required="" id="email" style="cursor: pointer"
+                                   onblur="validateEmail(this.value)">
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group2 group-mail">
+                            <label class="control-label">Gender</label>
+                            <select id="gender" style="cursor: pointer">
+                                <option value=0 style="cursor: pointer">Male</option>
+                                <option value=1 style="cursor: pointer">Female</option>
+                            </select>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group2 group-mail">
+                            <label class="control-label">Country</label>
+                            <select id="countryid" style="cursor: pointer" onchange=changeCountry()>
+                                <option th:each="country,countryState:${countries}" th:value="${country.countryid}"
+                                        th:text="${country.countryname}" style="cursor: pointer"></option>
+                            </select>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group2 group-mail">
+                            <label class="control-label">State</label>
+                            <select id="stateid" style="cursor: pointer" onchange=changeState()>
+                                <option th:each="state, stateState:${states}" th:value="${state.stateid}"
+                                        th:text="${state.statename}" style="cursor: pointer"></option>
+                            </select>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group2 group-mail">
+                            <label class="control-label">City</label>
+                            <select id="cityid" style="cursor: pointer">
+                                <option th:each="city, cityState:${cities}" th:value="${city.cityid}"
+                                        th:text="${city.cityname}" style="cursor: pointer"></option>
+                            </select>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group button-2">
+                            <button type="button" th:onclick="submit()" class="btn btn-primary">Submit</button>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <header class="logo">
+            <span class="fa fa-bars sidebar-icon" style="cursor: pointer;"></span> <span
+                id="logo"> <h1>Student</h1></span>
+
+        </header>
+        <div style="border-top:1px solid rgba(69, 74, 84, 0.7)"></div>
+        <!--//down-->
+        <div class="menu">
+            <ul id="menu">
+                <li>
+                    <a style="cursor: pointer" th:href="all"><i class="fa fa-users"></i> <span>All</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="add"><i class="fa fa-plus"></i><span> Add</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="search"><i class="fa fa-search"></i> <span>Search</span> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+<div class="modal fade" id="modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <i id="result" class="fa fa-check" style="color: lightgreen">Success</i>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    var toggle = true;
+
+    $(".sidebar-icon").click(function () {
+        if (toggle) {
+            $(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+            $("#menu span").css({"position": "absolute"});
+        }
+        else {
+            $(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+            setTimeout(function () {
+                $("#menu span").css({"position": "relative"});
+            }, 400);
+        }
+        toggle = !toggle;
+    });
+
+    function submit() {
+        let student = new Object();
+        student.studentid = $("#studentid").val();
+        student.name = $("#name").val();
+        student.email = $("#email").val();
+        student.gender = $("#gender").val();
+        student.countryid = $("#countryid").val();
+        student.stateid = $("#stateid").val();
+        student.cityid = $("#cityid").val();
+        let validationID = validateID(student.studentid);
+        let validationName = validateName(student.name);
+        let validationEmail = validateEmail(student.email);
+        if (validationID && validationName && validationEmail) {
+            $.ajax({
+                type: "POST",
+                url: "addStudent",
+                contentType: 'application/json',
+                dataType: "json",
+                data: JSON.stringify({
+                    studentid: student.studentid,
+                    name: student.name,
+                    gender: student.gender,
+                    email: student.email,
+                    countryid: student.countryid,
+                    stateid: student.stateid,
+                    cityid: student.cityid
+                }),
+                success: function (test) {
+                    console.log(test);
+                    if (test > 0) {
+                        $("#result").removeClass("fa-warning")
+                            .addClass("fa-check")
+                            .css("color", "green")
+                            .css("font-size", "4em")
+                            .text("Success");
+
+                    } else {
+                        $("#result").removeClass("fa-check")
+                            .addClass("fa-warning")
+                            .css("color", "red")
+                            .css("font-size", "4em")
+                            .text("Failed");
+                    }
+                    $("#modal").modal();
+                }
+
+            })
+        }
+
+    }
+
+    $(window).keydown(function (e) {
+       if (e.which === 13){
+           submit();
+       }
+    });
+
+    function changeState() {
+        $.ajax({
+            type: "POST",
+            url: "/changeState",
+            dataType: "json",
+            data: {id: $("#stateid").val()},
+            success: function (test) {
+                $("#cityid").empty();
+                for (let option of test) {
+                    $("#cityid").append("<option value=\"" + option.cityid + "\" style=\"cursor : pointer \">" + option.cityname + "</option>")
+                }
+            }
+        });
+
+    }
+
+    function changeCountry() {
+
+        $.ajax({
+            type: "POST",
+            url: "/changeCountry",
+            dataType: "json",
+            data: {id: $("#countryid").val()},
+            success: function (test) {
+                $("#stateid").empty();
+                for (let option of test) {
+                    $("#stateid").append("<option value=\"" + option.stateid + "\" style=\"cursor : pointer \">" + option.statename + "</option>")
+                }
+                changeState();
+            }
+        });
+
+    }
+
+    function validateID(studentid) {
+        studentid = studentid.trim();
+        let result = studentid.match(/^[0-9]{1,12}$/);
+        if (!result) {
+            $("#studentid").css('border', '1px solid red');
+        } else {
+            $("#studentid").css('border', '1px solid #E9E9E9');
+        }
+        return result;
+    }
+
+    function validateName(name) {
+        name = name.trim();
+        let result = name.match(/^[a-zA-Z\u4E00-\u9FA5]{1,8}$/);
+        if (!result) {
+            $("#name").css('border', '1px solid red');
+        } else {
+            $("#name").css('border', '1px solid #E9E9E9');
+        }
+        return result;
+    }
+
+    function validateEmail(email) {
+        email = email.trim();
+        let result = email.match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/);
+        if (!result) {
+            $("#email").css('border', '1px solid red');
+        } else {
+            $("#email").css('border', '1px solid #E9E9E9');
+        }
+        return result;
+    }
+</script>
+<!--js -->
+<script th:src="@{js/jquery.nicescroll.js}"></script>
+<script th:src="@{js/scripts.js}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script th:src="@{js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{css/bootstrap.min.css}" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+    <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
+    <!-- Graph CSS -->
+    <link th:href="@{css/font-awesome.css}" rel="stylesheet">
+    <!-- icons -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" th:href="@{css/icon-font.min.css}" type='text/css'/>
+    <!-- jquery -->
+    <script th:src="@{js/jquery-1.10.2.min.js}"></script>
+</head>
+<body>
+<div class="page-container">
+    <div class="left-content">
+        <div>
+            <div class="outter-wp">
+                <div class="sub-heard-part">
+                    <ol class="breadcrumb m-b-0">
+                        <li><a th:href="all">Home</a></li>
+                        <li class="active">All</li>
+                    </ol>
+                </div>
+                <div class="graph-visual tables-main">
+                    <h2 class="inner-tittle">All Students</h2>
+                    <div class="graph">
+                        <div class="tables" th:if="${students.size() > 0}">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr style="cursor: pointer">
+                                    <th>#</th>
+                                    <th id="orderStudentID">StudentID</th>
+                                    <th id="orderName">Name</th>
+                                    <th id="orderGender">Gender</th>
+                                    <th id="orderEmail">Email</th>
+                                    <th id="orderCountry">Country</th>
+                                    <th id="orderState">State</th>
+                                    <th id="orderCity">City</th>
+                                </tr>
+                                </thead>
+                                <tbody id="studentResult">
+                                <tr th:each="student,studentStat:${students}" style="cursor: pointer">
+                                    <th scope="row" th:text="${studentStat.count}"></th>
+                                    <td th:text="${student.studentid}"></td>
+                                    <td th:text="${student.name}"></td>
+                                    <td th:text="${student.getGender() == 0?'Male':'Famale'}"></td>
+                                    <td th:text="${student.email}"></td>
+                                    <td th:text="${student.countryname}"></td>
+                                    <td th:text="${student.statename}"></td>
+                                    <td th:text="${student.cityname}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <header class="logo">
+            <span class="fa fa-bars sidebar-icon" style="cursor: pointer;"></span> <span
+                id="logo"> <h1>Student</h1></span>
+
+        </header>
+        <div style="border-top:1px solid rgba(69, 74, 84, 0.7)"></div>
+        <!--//down-->
+        <div class="menu">
+            <ul id="menu">
+                <li>
+                    <a style="cursor: pointer" th:href="all"><i class="fa fa-users"></i> <span>All</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="add"><i class="fa fa-plus"></i><span> Add</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="search"><i class="fa fa-search"></i> <span>Search</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<script>
+    var toggle = true;
+
+    $(".sidebar-icon").click(function () {
+        if (toggle) {
+            $(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+            $("#menu span").css({"position": "absolute"});
+        }
+        else {
+            $(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+            setTimeout(function () {
+                $("#menu span").css({"position": "relative"});
+            }, 400);
+        }
+
+        toggle = !toggle;
+    });
+
+    $("#orderCity").click(function () {
+        order("cityid");
+    });
+
+    $("#orderCountry").click(function () {
+        order("countryid")
+    });
+
+    $("#orderState").click(function () {
+        order("stateid")
+    });
+
+    $("#orderGender").click(function () {
+        order("gender");
+    });
+
+    $("#orderName").click(function () {
+        order("name")
+    });
+
+    $("#orderEmail").click(function () {
+        order("email")
+    });
+    $("#orderStudentID").click(function () {
+        order("studentid");
+    });
+
+
+    function order(orderType) {
+        orderType = orderType.trim();
+        $.ajax({
+            type: "POST",
+            url: "all",
+            dataType: "json",
+            data: {
+                order: orderType
+            },
+            success: function (test) {
+                $("#studentResult").empty();
+                for (let i in test) {
+                    let option = test[i];
+                    let row = parseInt(i) + 1;
+                    let gender = option['gender'] === 0 ? '男' : '女';
+
+                    $("#studentResult").append("<tr style=\"cursor: pointer\">\n" +
+                        "                                    <th scope='row'>" + row + "</th>\n" +
+                        "                                    <td >" + option.studentid + "</td>\n" +
+                        "                                    <td >" + option.name + "</td>\n" +
+                        "                                    <td >" + gender + "</td>\n" +
+                        "                                    <td >" + option.email + "</td>\n" +
+                        "                                    <td >" + option.countryname + "</td>\n" +
+                        "                                    <td >" + option.statename + "</td>\n" +
+                        "                                    <td >" + option.cityname + "</td>\n" +
+                        "                                </tr>")
+                }
+            }
+        })
+    }
+
+</script>
+<!--js -->
+<script th:src="@{js/jquery.nicescroll.js}"></script>
+<script th:src="@{js/scripts.js}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script th:src="@{js/bootstrap.min.js}"></script>
+</body>
+</html>

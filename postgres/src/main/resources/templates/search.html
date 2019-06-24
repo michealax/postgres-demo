@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{css/bootstrap.min.css}" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+    <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
+    <!-- Graph CSS -->
+    <link th:href="@{css/font-awesome.css}" rel="stylesheet">
+    <!-- icons -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" th:href="@{css/icon-font.min.css}" type='text/css'/>
+    <!-- jquery -->
+    <script th:src="@{js/jquery-1.10.2.min.js}"></script>
+</head>
+<body>
+<div class="page-container">
+    <div class="left-content">
+
+        <div class="outter-wp">
+            <div class="sub-heard-part">
+                <ol class="breadcrumb m-b-0">
+                    <li><a th:href="all">Home</a></li>
+                    <li class="active">Search</li>
+                </ol>
+            </div>
+            <div class="forms-main">
+                <h2 class="inner-tittle">Student Search</h2>
+                <div class="graph-form">
+                    <div class="validation-form">
+                        <div class="col-md-offset-1 col-md-6 form-group1">
+                            <label class="control-label">Student ID</label>
+                            <input type="text" placeholder="Student ID" required="" id="searchValue"
+                                   style="cursor: pointer" onblur="validateID(this.value)">
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="col-md-offset-1 col-md-6 form-group button-2">
+                            <button type="button" id="search" class="btn btn-primary">Search</button>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="graph-visual tables-main">
+                <h2 class="inner-tittle">Student Inform</h2>
+                <div class="graph" id="result" hidden>
+                    <div class="tables">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>StudentID</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Email</th>
+                                <th>Country</th>
+                                <th>State</th>
+                                <th>City</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row" th:text="1"></th>
+                                <td id="studentid"></td>
+                                <td id="name"></td>
+                                <td id="gender"></td>
+                                <td id="email"></td>
+                                <td id="country"></td>
+                                <td id="state"></td>
+                                <td id="city"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="noStudent" hidden>
+                    There is no such student.
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <header class="logo">
+            <span class="fa fa-bars sidebar-icon" style="cursor: pointer;"></span> <span
+                id="logo"> <h1>Student</h1></span>
+
+        </header>
+        <div style="border-top:1px solid rgba(69, 74, 84, 0.7)"></div>
+        <!--//down-->
+        <div class="menu">
+            <ul id="menu">
+                <li>
+                    <a style="cursor: pointer" th:href="all"><i class="fa fa-users"></i> <span>All</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="add"><i class="fa fa-plus"></i><span> Add</span></a>
+                </li>
+                <li>
+                    <a style="cursor: pointer" th:href="search"><i class="fa fa-search"></i> <span>Search</span> </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<script>
+    var toggle = true;
+
+    $(".sidebar-icon").click(function () {
+        if (toggle) {
+            $(".page-container").addClass("sidebar-collapsed").removeClass("sidebar-collapsed-back");
+            $("#menu span").css({"position": "absolute"});
+        }
+        else {
+            $(".page-container").removeClass("sidebar-collapsed").addClass("sidebar-collapsed-back");
+            setTimeout(function () {
+                $("#menu span").css({"position": "relative"});
+            }, 400);
+        }
+
+        toggle = !toggle;
+    });
+
+    function search() {
+
+        let studentid = $("#searchValue").val().trim();
+
+        if (validateID(studentid)) {
+            console.log(studentid);
+            $.ajax({
+                type: "GET",
+                url: "searchStudent",
+                dataType: "json",
+                data: {studentid: studentid},
+                success: function (test) {
+                    if (test !== null) {
+                        $("#noStudent").hide();
+                        $("#result").show();
+                        $("#studentid").text(test.studentid);
+                        $("#name").text(test.name);
+                        $("#gender").text(test.gender);
+                        $("#email").text(test.email);
+                        $("#country").text(test.countryname);
+                        $("#state").text(test.statename);
+                        $("#city").text(test.cityname);
+                    } else {
+                        $("#result").hide();
+                        $("#noStudent").show();
+                    }
+
+                }
+            });
+        }
+
+    }
+
+    $("#search").click(function () {
+        search();
+    });
+
+    $(window).keydown(function (e) {
+        if (e.which === 13){
+            search();
+        }
+
+    });
+    function validateID(studentid) {
+        studentid = studentid.trim();
+        let result = studentid.match(/^[0-9]{1,12}$/);
+        if (!result) {
+            $("#searchValue").css('border', '1px solid red');
+        } else {
+            $("#searchValue").css('border', '1px solid #E9E9E9');
+        }
+        return result;
+    }
+</script>
+<!--js -->
+<script th:src="@{js/jquery.nicescroll.js}"></script>
+<script th:src="@{js/scripts.js}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script th:src="@{js/bootstrap.min.js}"></script>
+</body>
+</html>
