@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import postgres.entity.City;
 import postgres.entity.State;
 import postgres.entity.Student;
@@ -21,12 +20,8 @@ public class StudentController {
     @Resource
     private StudentService studentService;
 
-    @RequestMapping("detail")
-    @ResponseBody
-    public String detail() {
-        return "Hello world";
-    }
-
+    /**
+     * get the all students*/
     @RequestMapping(value = "all", method = RequestMethod.GET)
     public String getStudents(Model model, @RequestParam(defaultValue = "studentid") String order) {
         List<CustomStudent> students = studentService.orderStudent(order);
@@ -34,6 +29,8 @@ public class StudentController {
         return "index";
     }
 
+    /**
+     * get the all students*/
     @RequestMapping(value = "all", method = RequestMethod.POST)
     @ResponseBody
     public String postStudents( String order) {
@@ -41,6 +38,8 @@ public class StudentController {
         return JSON.toJSONString(students);
     }
 
+    /**
+     * add a new student*/
     @RequestMapping(value = "addStudent", method = RequestMethod.POST)
     @ResponseBody
     public String addStudent(@RequestBody Student student) {
@@ -52,6 +51,8 @@ public class StudentController {
         return JSON.toJSONString(result);
     }
 
+    /**
+     * search a student*/
     @RequestMapping(value = "searchStudent")
     @ResponseBody
     public String searchStudent(@RequestParam String studentid) {
@@ -59,6 +60,8 @@ public class StudentController {
         return JSON.toJSONString(temp);
     }
 
+    /**
+     * search the cities accords to a state*/
     @RequestMapping(value = "changeState", method = RequestMethod.POST)
     @ResponseBody
     public Object changeState(Integer id) {
@@ -66,6 +69,8 @@ public class StudentController {
         return JSON.toJSONString(states);
     }
 
+    /**
+     * search the states accords to a country*/
     @RequestMapping(value = "changeCountry", method = RequestMethod.POST)
     @ResponseBody
     public Object changeCountry(Integer id) {

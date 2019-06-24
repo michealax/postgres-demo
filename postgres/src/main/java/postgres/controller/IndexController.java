@@ -18,11 +18,17 @@ import java.util.List;
 public class IndexController {
     @Resource
     private StudentService studentService;
+
+    /**
+     * input /
+     * it will be redirected to the /all*/
     @RequestMapping("/")
     public String index(){
         return "redirect:/all";
     }
 
+    /**
+     * enter the add page*/
     @RequestMapping("/add")
     public ModelAndView add(){
         ModelAndView modelAndView = new ModelAndView("add");
@@ -42,11 +48,15 @@ public class IndexController {
         return modelAndView;
     }
 
+    /**
+     * enter the search page*/
     @RequestMapping("/search")
     public String search(){
         return "search";
     }
 
+    /**
+     * the 404 page*/
     @RequestMapping("/404")
     public String error(){
         return "/404";
